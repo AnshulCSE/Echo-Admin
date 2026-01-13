@@ -5,6 +5,7 @@ import AddStory from "./AddStory";
 import AddEpisode from "./AddEpisode";
 import Login from "./Login"; // <--- Import Login
 import ProtectedRoute from "./ProtectedRoute"; // <--- Import Guard
+import ManageStories from "./ManageStories";
 
 export default function App() {
   return (
@@ -34,6 +35,14 @@ export default function App() {
           <ProtectedRoute>
             <Layout>
               <AddEpisode />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/manage" element={
+          <ProtectedRoute>
+            <Layout>
+              <ManageStories />
             </Layout>
           </ProtectedRoute>
         } />
