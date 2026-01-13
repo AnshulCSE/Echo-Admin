@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, PlusCircle, Mic, ListMusic, LogOut, User } from "lucide-react";
+import { LayoutDashboard, PlusCircle, Mic, ListMusic, LogOut, User, FileText } from "lucide-react";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 
@@ -19,6 +19,7 @@ export default function Layout({ children }) {
 
   const menuItems = [
     { path: "/", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
+    { path: "/manage", label: "Manage Content", icon: <FileText size={20} /> },
     { path: "/add-story", label: "Create Story", icon: <PlusCircle size={20} /> },
     { path: "/add-episode", label: "Add Episode", icon: <Mic size={20} /> },
   ];
