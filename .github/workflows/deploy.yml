@@ -1,0 +1,40 @@
+name: Deploy to Firebase Hosting
+
+on:
+  # Trigger 1: Code Review (Generates Preview URL)
+  pull_request:
+    branches:
+      - main
+      - dev
+  # Trigger 2: Post-Merge (Deploys to Live/Dev)
+  push:
+    branches:
+      - main
+      - dev
+
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write # REQUIRED for the bot to comment the URL on the PR
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install & Build
+        run: npm ci && npm run build
+
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECHO_V2_5B53F }}
+          projectId: echo-v2-5b53f
+
+          # SMART LOGIC:
+          # 1. If Event is PR -> Empty string '' (Action defaults to temporary preview)
+          # 2. If Push to Main -> 'live'
+          # 3. If Push to Dev -> 'dev'
+          channelId: ${{ github.event_name == 'push' && (github.ref_name == 'main' && 'live' || 'dev') || '' }}
