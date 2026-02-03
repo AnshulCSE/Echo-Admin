@@ -1,51 +1,71 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
-import Dashboard from "./Dashboard";
-import AddStory from "./AddStory";
-import AddEpisode from "./AddEpisode";
-import Login from "./Login"; // <--- Import Login
-import ProtectedRoute from "./ProtectedRoute"; // <--- Import Guard
-import ManageStories from "./ManageStories";
+import Dashboard from "./Dashboard"; // Stats Page
+import ManageStories from "./ManageStories"; // Content Management
+import Login from "./Login"; 
+import Marketing from "./Marketing";
+import Settings from "./Settings";
+import ProtectedRoute from "./ProtectedRoute"; 
+import SessionManager from './components/SessionManager';
+import Users from "./Users";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Route */}
         <Route path="/login" element={<Login />} />
 
         {/* Protected Admin Routes */}
         <Route path="/" element={
           <ProtectedRoute>
-            <Layout>
-              <Dashboard />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/add-story" element={
-          <ProtectedRoute>
-            <Layout>
-              <AddStory />
-            </Layout>
+            <SessionManager>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </SessionManager>
           </ProtectedRoute>
         } />
 
-        <Route path="/add-episode" element={
+        <Route path="/content" element={
           <ProtectedRoute>
-            <Layout>
-              <AddEpisode />
-            </Layout>
+            <SessionManager>
+              <Layout>
+                <ManageStories />
+              </Layout>
+            </SessionManager>
           </ProtectedRoute>
         } />
-        
-        <Route path="/manage" element={
+
+        <Route path="/users" element={
           <ProtectedRoute>
-            <Layout>
-              <ManageStories />
-            </Layout>
+            <SessionManager>
+              <Layout>
+                <Users />
+              </Layout>
+            </SessionManager>
           </ProtectedRoute>
         } />
+
+        <Route path="/marketing" element={
+          <ProtectedRoute>
+            <SessionManager>
+              <Layout>
+                <Marketing />
+              </Layout>
+            </SessionManager>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SessionManager>
+              <Layout>
+                <Settings />
+              </Layout>
+            </SessionManager>
+          </ProtectedRoute>
+        } />
+
       </Routes>
     </BrowserRouter>
   );
