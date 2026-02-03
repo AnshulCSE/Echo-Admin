@@ -24,8 +24,8 @@ jobs:
       - name: Install & Build
         run: npm ci && npm run build
 
-      # --- 🚨 CRITICAL FIX: FORCE FIREBASE TO SEE DIST ---
-      - name: Fix Firebase Config
+      # --- 🚨 THE FIX: FORCE FIREBASE TO SEE DIST ---
+      - name: Create Correct Firebase Config
         run: |
           echo '{
             "hosting": {
@@ -34,7 +34,7 @@ jobs:
               "rewrites": [{"source": "**", "destination": "/index.html"}]
             }
           }' > firebase.json
-      # ---------------------------------------------------
+      # ----------------------------------------------
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
