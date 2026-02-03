@@ -1,12 +1,10 @@
 name: Deploy to Firebase Hosting
 
 on:
-  # Trigger 1: Code Review (Generates Preview URL)
   pull_request:
     branches:
       - main
       - dev
-  # Trigger 2: Post-Merge (Deploys to Live/Dev)
   push:
     branches:
       - main
@@ -15,7 +13,7 @@ on:
 permissions:
   checks: write
   contents: read
-  pull-requests: write # REQUIRED for the bot to comment the URL on the PR
+  pull-requests: write
 
 jobs:
   build_and_deploy:
@@ -26,15 +24,23 @@ jobs:
       - name: Install & Build
         run: npm ci && npm run build
 
+      # --- 🚨 CRITICAL FIX: FORCE FIREBASE TO SEE DIST ---
+      - name: Fix Firebase Config
+        run: |
+          echo '{
+            "hosting": {
+              "public": "dist",
+              "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+              "rewrites": [{"source": "**", "destination": "/index.html"}]
+            }
+          }' > firebase.json
+      # ---------------------------------------------------
+
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECHO_V2_5B53F }}
           projectId: echo-v2-5b53f
-
-          # SMART LOGIC:
-          # 1. If Event is PR -> Empty string '' (Action defaults to temporary preview)
-          # 2. If Push to Main -> 'live'
-          # 3. If Push to Dev -> 'dev'
+          entryPoint: "."
           channelId: ${{ github.event_name == 'push' && (github.ref_name == 'main' && 'live' || 'dev') || '' }}
